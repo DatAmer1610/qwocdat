@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Game Shop — Demo</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --glass: rgba(255,255,255,0.06);
+      --accent:#7c3aed;
+      --muted: #98a8c3;
+      --glass-border: rgba(255,255,255,0.08);
+      --glass-2: rgba(255,255,255,0.03);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.12), transparent 10%),
+                  radial-gradient(900px 500px at 90% 90%, rgba(14,165,233,0.06), transparent 10%),
+                  var(--bg);
+      color:#e6eef8;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:32px;
+      min-height:100vh;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      gap:24px;
+    }
+
+    /* container */
+    .wrap{
+      width:1100px;
+      max-width:calc(100% - 48px);
+      display:grid;
+      grid-template-columns: 1fr 340px;
+      gap:24px;
+      align-items:start;
+    }
+
+    /* left panel */
+    .panel{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid var(--glass-border);
+      box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+      border-radius:18px;
+      padding:20px;
+      backdrop-filter: blur(8px) saturate(120%);
+    }
+
+    header.shop-head{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-bottom:14px;
+    }
+    .logo {
+      width:56px;height:56px;border-radius:12px;
+      background:linear-gradient(135deg,var(--accent), #06b6d4);
+      display:flex;align-items:center;justify-content:center;font-weight:700;
+      box-shadow: 0 6px 22px rgba(124,58,237,0.12);
+    }
+    .logo span{font-size:20px; color:white}
+    .shop-title{line-height:1}
+    .shop-title h1{margin:0;font-size:18px;}
+    .shop-title p{margin:0;color:var(--muted);font-size:13px}
+
+    .controls{
+      display:flex;gap:12px;margin:16px 0 20px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .search{
+      flex:1;
+      display:flex;
+      background:var(--glass);
+      border:1px solid var(--glass-border);
+      padding:10px 12px;border-radius:12px;align-items:center;gap:8px;
+    }
+    .search input{flex:1;background:transparent;border:0;outline:none;color:inherit;font-size:14px}
+    .catlist{display:flex;gap:8px;flex-wrap:wrap}
+    .cat{padding:8px 12px;border-radius:999px;background:var(--glass-2);border:1px solid transparent;color:var(--muted);cursor:pointer;font-size:13px}
+    .cat.active{background:linear-gradient(90deg,var(--accent), #06b6d4);color:white;border-color:rgba(255,255,255,0.06);box-shadow:0 6px 20px rgba(7,10,28,0.6)}
+
+    /* products */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
+      gap:14px;
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid var(--glass-border);
+      border-radius:14px;
+      padding:12px;
+      display:flex;flex-direction:column;gap:10px;
+      transition:transform .22s cubic-bezier(.2,.9,.3,1), box-shadow .22s;
+      cursor: pointer;
+    }
+    .card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(2,6,23,0.6)}
+    .thumb{
+      height:120px;border-radius:10px;background:linear-gradient(135deg,#111827,#0b1220);display:flex;align-items:center;justify-content:center;font-weight:700;
+      color:var(--muted); font-size:14px;
+    }
+    .meta{display:flex;justify-content:space-between;align-items:center}
+    .name{font-weight:600}
+    .price{background: linear-gradient(90deg,#f97316,#fb7185);padding:6px 10px;border-radius:999px;font-weight:700;font-size:13px;color:white}
+
+    .tag{font-size:12px;color:var(--muted);border:1px dashed rgba(255,255,255,0.03);padding:6px 8px;border-radius:8px}
+
+    .card .actions{display:flex;gap:8px;margin-top:auto}
+    .btn{padding:8px 10px;border-radius:10px;border:1px solid transparent;background:var(--glass);cursor:pointer;font-weight:600}
+    .btn.primary{background:linear-gradient(90deg,var(--accent), #06b6d4);color:white;border-color:rgba(255,255,255,0.06)}
+    .btn.ghost{background:transparent;border:1px solid var(--glass-border);color:var(--muted)}
+
+    /* right cart */
+    .cart-panel{position:sticky;top:32px;height:fit-content;min-height:160px}
+    .cart-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .cart-list{display:flex;flex-direction:column;gap:12px}
+    .cart-item{display:flex;gap:10px;align-items:center;background:var(--glass-2);padding:8px;border-radius:10px;border:1px solid var(--glass-border)}
+    .cart-item .meta{flex:1;display:flex;flex-direction:column}
+    .total{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,0.03)}
+    .checkout{width:100%;padding:12px;border-radius:12px;background:linear-gradient(90deg,var(--accent),#06b6d4);border:0;color:white;font-weight:800;cursor:pointer}
+
+    /* modal */
+    .backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:flex;align-items:center;justify-content:center;z-index:60}
+    .modal{
+      width:min(720px,92%);border-radius:16px;padding:20px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid var(--glass-border);backdrop-filter: blur(10px) saturate(120%);
+      box-shadow:0 30px 80px rgba(2,6,23,0.7);
+    }
+    .modal-grid{display:grid;grid-template-columns:220px 1fr;gap:18px}
+    .modal .thumb{height:180px;border-radius:12px}
+
+    /* small screens */
+    @media (max-width:980px){
+      .wrap{grid-template-columns:1fr; padding-bottom:24px}
+      .cart-panel{position:relative;top:auto}
+    }
+
+    /* small fancy */
+    .pulse{
+      position:relative;
+      overflow:hidden;
+    }
+    .pulse:after{
+      content:"";position:absolute;left:-40%;top:-40%;width:200%;height:200%;background:radial-gradient(circle at center, rgba(255,255,255,0.02), transparent 20%);transform:rotate(20deg);opacity:0.9;pointer-events:none;
+    }
+
+    /* disabled */
+    .muted{opacity:0.6;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- LEFT -->
+    <div class="panel">
+      <header class="shop-head">
+        <div class="logo"><span>GG</span></div>
+        <div class="shop-title">
+          <h1>Game Shop</h1>
+          <p>Mua nhanh — nhận ngay trong game</p>
+        </div>
+      </header>
+
+      <div class="controls">
+        <div class="search" style="min-width:220px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="opacity:.9"><path d="M21 21l-4.35-4.35" stroke="white" stroke-opacity=".8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="white" stroke-opacity=".8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <input id="search" placeholder="Tìm kiếm sản phẩm..." />
+        </div>
+
+        <div id="catlist" class="catlist" aria-hidden="false">
+          <div class="cat active" data-cat="All">Tất cả</div>
+          <div class="cat" data-cat="Popular">Popular</div>
+          <div class="cat" data-cat="New">New</div>
+          <div class="cat" data-cat="Limited">Limited</div>
+          <div class="cat" data-cat="Season">Season</div>
+          <div class="cat" data-cat="Gacha">Gacha</div>
+        </div>
+      </div>
+
+      <main>
+        <div id="grid" class="grid">
+          <!-- product cards injected here -->
+        </div>
+      </main>
+    </div>
+
+    <!-- RIGHT CART -->
+    <aside class="panel cart-panel">
+      <div class="cart-head">
+        <div>
+          <h3 style="margin:0">Giỏ hàng</h3>
+          <div class="muted" style="font-size:13px">Sản phẩm sẽ được gửi vào tài khoản ngay sau thanh toán</div>
+        </div>
+        <div style="text-align:right">
+          <div id="count" style="font-weight:800;color:var(--accent)">0</div>
+          <div class="muted" style="font-size:12px">items</div>
+        </div>
+      </div>
+
+      <div id="cartList" class="cart-list">
+        <div class="muted">Giỏ hàng trống</div>
+      </div>
+
+      <div class="total">
+        <div class="muted">Tổng</div>
+        <div id="total" style="font-weight:800">0$</div>
+      </div>
+
+      <button id="checkout" class="checkout" style="margin-top:12px">Thanh toán</button>
+    </aside>
+  </div>
+
+  <!-- modal container -->
+  <div id="modalRoot"></div>
+
+  <script>
+    // Data mẫu
+    const products = [
+      {id:1,name:'Gold Pack',price:4.99,tag:'Popular',desc:'1000 vàng dùng trong game',img:'',badge:'HOT'},
+      {id:2,name:'Starter Bundle',price:1.99,tag:'New',desc:'Gói khởi đầu +200 vàng',img:'',badge:'NEW'},
+      {id:3,name:'Premium Skin',price:9.99,tag:'Limited',desc:'Skin độc quyền, limited',img:'',badge:'LIMITED'},
+      {id:4,name:'Battle Pass',price:6.99,tag:'Season',desc:'Mở toàn bộ nhiệm vụ mùa',img:'',badge:'SEASON'},
+      {id:5,name:'XP Boost 7d',price:2.99,tag:'Utility',desc:'Nhân đôi EXP trong 7 ngày',img:'',badge:'UTILITY'},
+      {id:6,name:'Lucky Crate',price:3.99,tag:'Gacha',desc:'Cơ hội nhận item hiếm',img:'',badge:'GACHA'},
+    ];
+
+    // state
+    let state = {query:'',cat:'All',cart:[]};
+
+    // helpers
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+
+    function formatPrice(v){ return v.toFixed(2) + '$' }
+
+    // render product grid
+    function renderGrid(){
+      const grid = $('#grid');
+      grid.innerHTML = '';
+      const q = state.query.trim().toLowerCase();
+      const items = products.filter(p=>{
+        const matchQ = q === '' || p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q);
+        const matchCat = state.cat === 'All' || p.tag.toLowerCase() === state.cat.toLowerCase();
+        return matchQ && matchCat;
+      });
+      if(items.length===0){
+        grid.innerHTML = '<div class="muted">Không tìm thấy sản phẩm</div>';
+        return;
+      }
+      items.forEach(p=>{
+        const card = document.createElement('div');
+        card.className = 'card pulse';
+        card.innerHTML = `
+          <div class="thumb">${p.badge || ''}</div>
+          <div class="meta"><div class="name">${p.name}</div><div class="price">${formatPrice(p.price)}</div></div>
+          <div class="tag">${p.tag}</div>
+          <div style="font-size:13px;color:var(--muted)">${p.desc}</div>
+          <div class="actions">
+            <button class="btn ghost" data-id="${p.id}" data-act="view">Xem</button>
+            <div style="flex:1"></div>
+            <button class="btn primary" data-id="${p.id}" data-act="add">Thêm vào giỏ</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // render cart
+    function renderCart(){
+      const list = $('#cartList');
+      list.innerHTML = '';
+      if(state.cart.length===0){
+        list.innerHTML = '<div class="muted">Giỏ hàng trống</div>';
+      } else {
+        state.cart.forEach(ci=>{
+          const item = document.createElement('div');
+          item.className = 'cart-item';
+          item.innerHTML = `
+            <div style="width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#0b1220,#111827);display:flex;align-items:center;justify-content:center">${ci.name[0]}</div>
+            <div class="meta"><div style="font-weight:700">${ci.name}</div><div class="muted" style="font-size:13px">Qty: ${ci.qty}</div></div>
+            <div style="text-align:right"><div style="font-weight:800">${formatPrice(ci.price * ci.qty)}</div><div style="margin-top:8px"><button class="btn" data-id="${ci.id}" data-act="remove">-</button></div></div>
+          `;
+          list.appendChild(item);
+        });
+      }
+      $('#count').textContent = state.cart.reduce((s,i)=>s+i.qty,0);
+      $('#total').textContent = formatPrice(state.cart.reduce((s,i)=>s + i.price * i.qty,0));
+    }
+
+    // add to cart
+    function addToCart(id){
+      const p = products.find(x=>x.id===id);
+      if(!p) return;
+      const existing = state.cart.find(x=>x.id===id);
+      if(existing) existing.qty += 1;
+      else state.cart.push({id:p.id,name:p.name,price:p.price,qty:1});
+      renderCart();
+    }
+    function removeFromCart(id){
+      const idx = state.cart.findIndex(x=>x.id===id);
+      if(idx===-1) return;
+      state.cart[idx].qty -= 1;
+      if(state.cart[idx].qty <= 0) state.cart.splice(idx,1);
+      renderCart();
+    }
+
+    // show modal
+    function showModal(product){
+      const root = $('#modalRoot');
+      const wrap = document.createElement('div');
+      wrap.className = 'backdrop';
+      wrap.innerHTML = `
+        <div class="modal" role="dialog" aria-modal="true">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div>
+              <h2 style="margin:0">${product.name}</h2>
+              <div class="muted" style="font-size:13px">${product.tag}</div>
+            </div>
+            <div style="font-weight:900;color:var(--accent);font-size:20px">${formatPrice(product.price)}</div>
+          </div>
+          <div class="modal-grid">
+            <div class="thumb">${product.badge || ''}</div>
+            <div>
+              <p style="color:var(--muted);margin-top:0">${product.desc}</p>
+              <div style="margin-top:12px;display:flex;gap:8px">
+                <button class="btn primary" id="modalAdd">Thêm vào giỏ</button>
+                <button class="btn" id="modalClose">Đóng</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      root.appendChild(wrap);
+
+      // events
+      wrap.addEventListener('click', (e)=>{
+        if(e.target === wrap) { root.removeChild(wrap); }
+      });
+      $('#modalClose').onclick = ()=> root.removeChild(wrap);
+      $('#modalAdd').onclick = ()=>{
+        addToCart(product.id);
+        root.removeChild(wrap);
+      };
+    }
+
+    // init hooks
+    function init(){
+      renderGrid();
+      renderCart();
+
+      // search
+      $('#search').addEventListener('input', (e)=>{
+        state.query = e.target.value;
+        renderGrid();
+      });
+
+      // categories
+      $$('#catlist .cat').forEach(c=>{
+        c.addEventListener('click', ()=>{
+          $$('#catlist .cat').forEach(x=>x.classList.remove('active'));
+          c.classList.add('active');
+          state.cat = c.dataset.cat;
+          renderGrid();
+        });
+      });
+
+      // delegate product actions
+      $('#grid').addEventListener('click', (e)=>{
+        const btn = e.target.closest('button');
+        if(!btn) return;
+        const id = Number(btn.dataset.id);
+        const act = btn.dataset.act;
+        if(act === 'add') addToCart(id);
+        if(act === 'view') {
+          const p = products.find(x=>x.id===id);
+          showModal(p);
+        }
+      });
+
+      // cart actions (remove)
+      $('#cartList').addEventListener('click', (e)=>{
+        const btn = e.target.closest('button');
+        if(!btn) return;
+        const id = Number(btn.dataset.id);
+        const act = btn.dataset.act;
+        if(act === 'remove') removeFromCart(id);
+      });
+
+      // checkout (demo)
+      $('#checkout').addEventListener('click', ()=>{
+        if(state.cart.length===0){
+          alert('Giỏ hàng trống!');
+          return;
+        }
+        // demo: fake checkout
+        const total = state.cart.reduce((s,i)=>s + i.price*i.qty,0).toFixed(2);
+        if(confirm('Thanh toán demo — tổng ' + total + '$ ?')){
+          alert('Thanh toán thành công! Sản phẩm sẽ được gửi vào tài khoản trong game (demo).');
+          state.cart = [];
+          renderCart();
+        }
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
