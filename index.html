@@ -3,46 +3,138 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shop Game Qdat</title>
+  <title>Qdat Game Shop</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    /* Hiệu ứng popup glass */
+    .glass {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    @keyframes popup {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-popup {
+      animation: popup 0.4s ease forwards;
+    }
+  </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
 
   <!-- Header -->
   <header class="bg-gray-800 p-4 flex justify-between items-center shadow-lg">
     <h1 class="text-2xl font-bold text-yellow-400">Qdat Game Shop</h1>
-    <button onclick="window.location.href='payment.html'" class="bg-yellow-400 hover:bg-yellow-300 text-black font-bold px-4 py-2 rounded-lg transition">
-      Thanh toán
-    </button>
+    <div class="text-gray-300">
+      Tổng tiền: <span id="total" class="text-yellow-400 font-bold">0đ</span>
+    </div>
   </header>
 
   <!-- Danh sách sản phẩm -->
   <main class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     <div class="bg-gray-800 rounded-xl p-4 text-center shadow-lg hover:scale-105 transform transition">
       <h2 class="text-xl font-bold mb-2">Gói Kim Cương</h2>
-      <p class="text-gray-400 mb-3">Nhận ngay 1000 KC</p>
+      <p class="text-gray-400 mb-3">Nhận 1000 KC</p>
       <p class="text-yellow-400 text-lg font-semibold mb-3">49.000đ</p>
-      <button class="bg-yellow-400 hover:bg-yellow-300 text-black px-4 py-2 rounded-lg">Thêm vào giỏ</button>
+      <button onclick="addToCart(49000)" class="bg-yellow-400 hover:bg-yellow-300 text-black px-4 py-2 rounded-lg">
+        Thêm vào giỏ
+      </button>
     </div>
 
     <div class="bg-gray-800 rounded-xl p-4 text-center shadow-lg hover:scale-105 transform transition">
       <h2 class="text-xl font-bold mb-2">Vé Vàng</h2>
-      <p class="text-gray-400 mb-3">Mở rương phần thưởng cao cấp</p>
+      <p class="text-gray-400 mb-3">Phần thưởng cao cấp</p>
       <p class="text-yellow-400 text-lg font-semibold mb-3">99.000đ</p>
-      <button class="bg-yellow-400 hover:bg-yellow-300 text-black px-4 py-2 rounded-lg">Thêm vào giỏ</button>
+      <button onclick="addToCart(99000)" class="bg-yellow-400 hover:bg-yellow-300 text-black px-4 py-2 rounded-lg">
+        Thêm vào giỏ
+      </button>
     </div>
 
     <div class="bg-gray-800 rounded-xl p-4 text-center shadow-lg hover:scale-105 transform transition">
       <h2 class="text-xl font-bold mb-2">Skin Súng</h2>
       <p class="text-gray-400 mb-3">Skin siêu hiếm</p>
       <p class="text-yellow-400 text-lg font-semibold mb-3">69.000đ</p>
-      <button class="bg-yellow-400 hover:bg-yellow-300 text-black px-4 py-2 rounded-lg">Thêm vào giỏ</button>
+      <button onclick="addToCart(69000)" class="bg-yellow-400 hover:bg-yellow-300 text-black px-4 py-2 rounded-lg">
+        Thêm vào giỏ
+      </button>
     </div>
   </main>
 
-  <footer class="text-center py-4 bg-gray-800 mt-6 text-gray-400">
+  <!-- Nút Thanh toán -->
+  <div class="flex justify-center mt-6">
+    <button onclick="openPopup()" class="bg-yellow-400 hover:bg-yellow-300 text-black font-bold px-6 py-3 rounded-xl transition">
+      Thanh toán
+    </button>
+  </div>
+
+  <!-- Popup Nạp thẻ -->
+  <div id="popup" class="fixed inset-0 hidden bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <div class="glass rounded-2xl p-6 w-96 animate-popup">
+      <h2 class="text-2xl font-bold text-yellow-400 mb-4 text-center">Nạp Thẻ Game</h2>
+      <p class="text-gray-300 mb-4 text-center">Tổng thanh toán: <span id="popup-total" class="text-yellow-400 font-semibold">0đ</span></p>
+
+      <input type="text" id="code" placeholder="Mã thẻ" class="w-full p-2 mb-3 rounded bg-gray-800 text-white outline-none">
+      <input type="text" id="seri" placeholder="Số seri" class="w-full p-2 mb-3 rounded bg-gray-800 text-white outline-none">
+
+      <select id="type" class="w-full p-2 mb-3 rounded bg-gray-800 text-white">
+        <option value="">Chọn loại thẻ</option>
+        <option>Viettel</option>
+        <option>Mobifone</option>
+        <option>Vinaphone</option>
+      </select>
+
+      <button onclick="confirmPayment()" class="bg-yellow-400 hover:bg-yellow-300 text-black font-bold w-full py-2 rounded-lg mb-3">
+        Xác nhận nạp
+      </button>
+
+      <button onclick="closePopup()" class="text-gray-300 hover:text-yellow-300 text-sm">
+        Hủy
+      </button>
+    </div>
+  </div>
+
+  <footer class="text-center py-4 bg-gray-800 mt-8 text-gray-400">
     © 2025 Qdat Game Shop
   </footer>
 
+  <script>
+    let total = 0;
+
+    function addToCart(price) {
+      total += price;
+      document.getElementById("total").innerText = total.toLocaleString() + "đ";
+    }
+
+    function openPopup() {
+      if (total === 0) {
+        alert("Giỏ hàng của bạn đang trống!");
+        return;
+      }
+      document.getElementById("popup-total").innerText = total.toLocaleString() + "đ";
+      document.getElementById("popup").classList.remove("hidden");
+    }
+
+    function closePopup() {
+      document.getElementById("popup").classList.add("hidden");
+    }
+
+    function confirmPayment() {
+      const code = document.getElementById("code").value.trim();
+      const seri = document.getElementById("seri").value.trim();
+      const type = document.getElementById("type").value;
+
+      if (!code || !seri || !type) {
+        alert("Vui lòng nhập đầy đủ thông tin nạp thẻ!");
+        return;
+      }
+
+      alert("Nạp thẻ thành công! Cảm ơn bạn đã mua hàng ❤️");
+      closePopup();
+      total = 0;
+      document.getElementById("total").innerText = "0đ";
+    }
+  </script>
 </body>
 </html>
