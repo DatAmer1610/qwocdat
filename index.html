@@ -3,247 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bảng Điều Khiển Aimbot 🔥 Tuyết Rơi</title>
-    <style>
-        /* CSS cơ bản cho hiệu ứng tuyết rơi */
-        body {
-            margin: 0;
-            overflow: hidden; 
-            background-color: #1a0000; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            position: relative; 
-        }
-
-        /* --- HIỆU ỨNG TUYẾT RƠI (SNOWFLAKE) --- */
-        .snowflake {
-            position: absolute;
-            background-color: #fff;
-            border-radius: 50%;
-            opacity: 0.8;
-            pointer-events: none; 
-            animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            0% { transform: translateY(-100px) translateX(0px); opacity: 0; }
-            10% { opacity: 0.8; }
-            100% { transform: translateY(calc(100vh + 100px)) translateX(50px); opacity: 0.2; } 
-        }
-
-        /* --- ANIMATIONS KHÁC --- */
-        @keyframes pulsate {
-            0% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.8; }
-        }
-
-        @keyframes slideIn {
-            0% { transform: translateY(-50px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes sparkle {
-            0%, 100% { filter: brightness(1); }
-            50% { filter: brightness(1.5); }
-        }
-
-        /* --- CONTAINER CHÍNH (PANEL) --- */
-        .container {
-            background-color: rgba(60, 0, 0, 0.85); 
-            border: 2px solid #ff0000; 
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.7), 0 0 40px rgba(255, 0, 0, 0.4); 
-            text-align: center;
-            max-width: 450px; /* Giảm chiều rộng cho Panel */
-            width: 90%;
-            position: relative;
-            z-index: 10; 
-            animation: slideIn 1s ease-out forwards; 
-        }
-
-        h1 {
-            color: #ffcc00; 
-            font-size: 2.2em;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
-            animation: pulsate 2s infinite ease-in-out; 
-        }
-
-        /* --- CONTROL GROUP (NHÓM ĐIỀU KHIỂN) --- */
-        .control-group {
-            margin-top: 20px;
-            margin-bottom: 20px;
-            background-color: rgba(90, 0, 0, 0.6);
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px dashed #ff5555;
-            text-align: left;
-        }
-
-        .control-group label {
-            color: #ffdddd;
-            font-size: 1.1em;
-            margin-bottom: 10px;
-            display: block;
-            font-weight: bold;
-        }
-
-        /* --- NÚT KÍCH HOẠT AIMBOT --- */
-        #toggle-aimbot-btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            font-size: 1.3em;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            margin-top: 15px;
-        }
-
-        .enabled {
-            background-color: #00ff00; /* Xanh lá khi BẬT */
-            color: #000;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
-        }
-
-        .disabled {
-            background-color: #ff0000; /* Đỏ khi TẮT */
-            color: #fff;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
-        }
-
-        .enabled:hover {
-            background-color: #00cc00;
-            transform: translateY(-2px);
-        }
-        
-        .disabled:hover {
-            background-color: #cc0000;
-            transform: translateY(-2px);
-        }
-
-        /* --- THANH TRƯỢT (RANGE SLIDER) --- */
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 8px;
-            outline: none;
-            opacity: 0.9;
-            transition: opacity .2s;
-            border-radius: 5px;
-            margin: 10px 0;
-            background: linear-gradient(to right, #ff0000 0%, #ffaaaa 100%); 
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #ffcc00; 
-            cursor: pointer;
-            border: 2px solid #ff0000;
-            box-shadow: 0 0 5px rgba(255, 204, 0, 0.7);
-        }
-    </style>
+    <title>Shop Bán Acc Game</title>
+    <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-
-    <div class="container">
-        <h1>⚙️ Bảng Điều Khiển Aimbot</h1>
-        
-        <button id="toggle-aimbot-btn" class="disabled" onclick="toggleAimbot()">
-            🔴 Aimbot đang TẮT
-        </button>
-
-        <div class="control-group">
-            <label for="sensitivity-range">
-                1. Tăng Độ Nhạy (Sensitivity): <span id="sensitivity-value">100</span>
-            </label>
-            <input type="range" id="sensitivity-range" min="10" max="200" value="100" 
-                   oninput="document.getElementById('sensitivity-value').innerText = this.value">
+    <header>
+        <nav>
+            <a href="index.html">Trang Chủ</a>
+            <a href="#">Đăng Nhập</a>
+            <a href="#">Đăng Ký</a>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h1>Danh sách tài khoản Game</h1>
+            <div class="product-list">
+                <div class="product-card">
+                    <img src="https://via.placeholder.com/300x200?text=Acc+Lien+Quan" alt="Ảnh Acc Game">
+                    <h3>Tài khoản #12345</h3>
+                    <p>Rank: Tinh Anh</p>
+                    <p>Tướng: 110</p>
+                    <p>Trang phục: 200</p>
+                    <div class="price">750,000 VNĐ</div>
+                    <a href="#" class="btn">Xem chi tiết</a>
+                </div>
+                <div class="product-card">
+                    <img src="https://via.placeholder.com/300x200?text=Acc+Free+Fire" alt="Ảnh Acc Game">
+                    <h3>Tài khoản #67890</h3>
+                    <p>Rank: Huyền Thoại</p>
+                    <p>Súng hiếm: 15</p>
+                    <p>Pet: 10</p>
+                    <div class="price">500,000 VNĐ</div>
+                    <a href="#" class="btn">Xem chi tiết</a>
+                </div>
+                <div class="product-card">
+                    <img src="https://via.placeholder.com/300x200?text=Acc+Genshin" alt="Ảnh Acc Game">
+                    <h3>Tài khoản #11223</h3>
+                    <p>AR: 58</p>
+                    <p>Nhân vật 5*: 12</p>
+                    <p>Vũ khí 5*: 8</p>
+                    <div class="price">1,200,000 VNĐ</div>
+                    <a href="#" class="btn">Xem chi tiết</a>
+                </div>
+            </div>
         </div>
-
-        <div class="control-group">
-            <label for="head-tracking-range">
-                2. Lực Bám Đầu (Head-Lock Strength): <span id="head-tracking-value">50</span>
-            </label>
-            <input type="range" id="head-tracking-range" min="0" max="100" value="50" 
-                   oninput="document.getElementById('head-tracking-value').innerText = this.value">
-        </div>
-
-        <p style="text-align: center; font-size: 0.9em; margin-top: 15px; color: #ff8888;">
-            *Đây là giao diện mô phỏng. Chức năng Aimbot yêu cầu phần mềm riêng biệt.*
-        </p>
-    </div>
-
-    <script>
-        // TRẠNG THÁI MÔ PHỎNG CỦA AIMBOT
-        let isAimbotEnabled = false;
-
-        // Hàm xử lý khi nhấn nút Kích hoạt/Vô hiệu hóa
-        function toggleAimbot() {
-            isAimbotEnabled = !isAimbotEnabled;
-            const btn = document.getElementById('toggle-aimbot-btn');
-            
-            if (isAimbotEnabled) {
-                btn.classList.remove('disabled');
-                btn.classList.add('enabled');
-                btn.innerHTML = '🟢 Aimbot đang BẬT';
-                console.log('Aimbot ĐÃ KÍCH HOẠT. Cài đặt hiện tại:', getCurrentSettings());
-                alert('Aimbot ĐÃ KÍCH HOẠT! (Dữ liệu sẽ được gửi tới chương trình game)');
-            } else {
-                btn.classList.remove('enabled');
-                btn.classList.add('disabled');
-                btn.innerHTML = '🔴 Aimbot đang TẮT';
-                console.log('Aimbot ĐÃ VÔ HIỆU HÓA.');
-                alert('Aimbot ĐÃ VÔ HIỆU HÓA.');
-            }
-        }
-
-        // Hàm lấy tất cả cài đặt hiện tại
-        function getCurrentSettings() {
-            const sensitivity = document.getElementById('sensitivity-range').value;
-            const headTracking = document.getElementById('head-tracking-range').value;
-            
-            return {
-                enabled: isAimbotEnabled,
-                sensitivity: sensitivity,
-                headTracking: headTracking
-            };
-        }
-
-        // JavaScript để tạo hiệu ứng tuyết rơi
-        const body = document.body;
-        const numberOfSnowflakes = 50; 
-
-        for (let i = 0; i < numberOfSnowflakes; i++) {
-            const snowflake = document.createElement('div');
-            snowflake.classList.add('snowflake');
-            
-            const size = Math.random() * 10 + 5; 
-            snowflake.style.width = `${size}px`;
-            snowflake.style.height = `${size}px`;
-            
-            snowflake.style.left = `${Math.random() * 100}vw`; 
-            
-            snowflake.style.animationDuration = `${Math.random() * 8 + 5}s`; 
-            
-            snowflake.style.animationDelay = `${Math.random() * 5}s`;
-
-            body.appendChild(snowflake);
-        }
-    </script>
-
+    </main>
+    <footer>
+        <p>&copy; 2025 Shop Acc Game Của Bạn</p>
+    </footer>
 </body>
 </html>
