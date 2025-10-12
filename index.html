@@ -1,140 +1,105 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Qdat Game Shop</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <style>
-    /* Hiệu ứng popup glass */
-    .glass {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    }
-    @keyframes popup {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .animate-popup {
-      animation: popup 0.4s ease forwards;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng Điều Khiển Aimbot Cơ Bản</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2e2e2e;
+            color: #f0f0f0;
+            padding: 20px;
+        }
+        .panel {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            margin: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            color: #00ff99;
+            text-align: center;
+        }
+        .control-group {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #3a3a3a;
+            border-radius: 4px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #00ff99;
+            border: none;
+            border-radius: 4px;
+            color: #1e1e1e;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #00cc77;
+        }
+    </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen">
+<body>
 
-  <!-- Header -->
-  <header class="bg-gray-800 p-4 flex justify-between items-center shadow-lg">
-    <h1 class="text-2xl font-bold text-yellow-400">Qdat Game Shop</h1>
-    <div class="text-gray-300">
-      Tổng tiền: <span id="total" class="text-yellow-400 font-bold">0đ</span>
+    <div class="panel">
+        <h1>⚙️ Cài Đặt Aimbot </h1>
+
+        <div class="control-group">
+            <label>
+                <input type="checkbox" id="aimbot-toggle" checked>
+                **Bật/Tắt Aimbot**
+            </label>
+        </div>
+
+        <div class="control-group">
+            <label for="target-part">Bộ Phận Ngắm (Target Part):</label>
+            <select id="target-part">
+                <option value="head">Đầu (Head)</option>
+                <option value="body">Thân (Body)</option>
+                <option value="leg">Chân (Leg)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="smoothness-range">Độ Mượt (Smoothness): <span id="smoothness-value">5</span></label>
+            <input type="range" id="smoothness-range" min="1" max="10" value="5" oninput="document.getElementById('smoothness-value').innerText = this.value">
+        </div>
+
+        <button onclick="saveSettings()">Lưu Cài Đặt</button>
+
+        <p style="text-align: center; font-size: 12px; margin-top: 20px; color: #aaa;">*Lưu ý: Đây chỉ là giao diện. Logic Aimbot phải được thực hiện bằng một ứng dụng bên ngoài.*</p>
     </div>
-  </header>
 
-  <!-- Danh sách sản phẩm -->
-  <main class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <div class="bg-gray-800 rounded-xl p-4 text-center shadow-lg hover:scale-105 transform transition">
-      <h2 class="text-xl font-bold mb-2">Gói Kim Cương</h2>
-      <p class="text-gray-400 mb-3">Nhận 1000 KC</p>
-      <p class="text-yellow-400 text-lg font-semibold mb-3">49.000đ</p>
-      <button onclick="addToCart(49000)" class="bg-yellow-400 hover:bg-yellow-300 text-black px-4 py-2 rounded-lg">
-        Thêm vào giỏ
-      </button>
-    </div>
+    <script>
+        function saveSettings() {
+            const isAimbotEnabled = document.getElementById('aimbot-toggle').checked;
+            const targetPart = document.getElementById('target-part').value;
+            const smoothness = document.getElementById('smoothness-range').value;
 
-    <div class="bg-gray-800 rounded-xl p-4 text-center shadow-lg hover:scale-105 transform transition">
-      <h2 class="text-xl font-bold mb-2">Vé Vàng</h2>
-      <p class="text-gray-400 mb-3">Phần thưởng cao cấp</p>
-      <p class="text-yellow-400 text-lg font-semibold mb-3">99.000đ</p>
-      <button onclick="addToCart(99000)" class="bg-yellow-400 hover:bg-yellow-300 text-black px-4 py-2 rounded-lg">
-        Thêm vào giỏ
-      </button>
-    </div>
+            console.log("Cài đặt đã lưu:");
+            console.log("Aimbot:", isAimbotEnabled ? "Bật" : "Tắt");
+            console.log("Mục tiêu:", targetPart);
+            console.log("Độ mượt:", smoothness);
 
-    <div class="bg-gray-800 rounded-xl p-4 text-center shadow-lg hover:scale-105 transform transition">
-      <h2 class="text-xl font-bold mb-2">Skin Súng</h2>
-      <p class="text-gray-400 mb-3">Skin siêu hiếm</p>
-      <p class="text-yellow-400 text-lg font-semibold mb-3">69.000đ</p>
-      <button onclick="addToCart(69000)" class="bg-yellow-400 hover:bg-yellow-300 text-black px-4 py-2 rounded-lg">
-        Thêm vào giỏ
-      </button>
-    </div>
-  </main>
+            alert('Đã lưu cài đặt! (Trong một ứng dụng thực, dữ liệu này sẽ được gửi đến Aimbot qua mạng.)');
+            // Trong thực tế, bạn sẽ dùng AJAX/Fetch để gửi dữ liệu này đến một server
+            // hoặc một API cục bộ mà Aimbot đang lắng nghe.
+        }
+    </script>
 
-  <!-- Nút Thanh toán -->
-  <div class="flex justify-center mt-6">
-    <button onclick="openPopup()" class="bg-yellow-400 hover:bg-yellow-300 text-black font-bold px-6 py-3 rounded-xl transition">
-      Thanh toán
-    </button>
-  </div>
-
-  <!-- Popup Nạp thẻ -->
-  <div id="popup" class="fixed inset-0 hidden bg-black bg-opacity-60 flex items-center justify-center z-50">
-    <div class="glass rounded-2xl p-6 w-96 animate-popup">
-      <h2 class="text-2xl font-bold text-yellow-400 mb-4 text-center">Nạp Thẻ Game</h2>
-      <p class="text-gray-300 mb-4 text-center">Tổng thanh toán: <span id="popup-total" class="text-yellow-400 font-semibold">0đ</span></p>
-
-      <input type="text" id="code" placeholder="Mã thẻ" class="w-full p-2 mb-3 rounded bg-gray-800 text-white outline-none">
-      <input type="text" id="seri" placeholder="Số seri" class="w-full p-2 mb-3 rounded bg-gray-800 text-white outline-none">
-
-      <select id="type" class="w-full p-2 mb-3 rounded bg-gray-800 text-white">
-        <option value="">Chọn loại thẻ</option>
-        <option>Viettel</option>
-        <option>Mobifone</option>
-        <option>Vinaphone</option>
-      </select>
-
-      <button onclick="confirmPayment()" class="bg-yellow-400 hover:bg-yellow-300 text-black font-bold w-full py-2 rounded-lg mb-3">
-        Xác nhận nạp
-      </button>
-
-      <button onclick="closePopup()" class="text-gray-300 hover:text-yellow-300 text-sm">
-        Hủy
-      </button>
-    </div>
-  </div>
-
-  <footer class="text-center py-4 bg-gray-800 mt-8 text-gray-400">
-    © 2025 Qdat Game Shop
-  </footer>
-
-  <script>
-    let total = 0;
-
-    function addToCart(price) {
-      total += price;
-      document.getElementById("total").innerText = total.toLocaleString() + "đ";
-    }
-
-    function openPopup() {
-      if (total === 0) {
-        alert("Giỏ hàng của bạn đang trống!");
-        return;
-      }
-      document.getElementById("popup-total").innerText = total.toLocaleString() + "đ";
-      document.getElementById("popup").classList.remove("hidden");
-    }
-
-    function closePopup() {
-      document.getElementById("popup").classList.add("hidden");
-    }
-
-    function confirmPayment() {
-      const code = document.getElementById("code").value.trim();
-      const seri = document.getElementById("seri").value.trim();
-      const type = document.getElementById("type").value;
-
-      if (!code || !seri || !type) {
-        alert("Vui lòng nhập đầy đủ thông tin nạp thẻ!");
-        return;
-      }
-
-      alert("Nạp thẻ thành công! Cảm ơn bạn đã mua hàng ❤️");
-      closePopup();
-      total = 0;
-      document.getElementById("total").innerText = "0đ";
-    }
-  </script>
 </body>
 </html>
